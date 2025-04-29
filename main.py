@@ -4,3 +4,11 @@ Create amazing plots in this file. You will read the data from `data_organized`
 You will do plot-related work such as joins, column filtering, pivots,
 small calculations and other simple organizational work.
 '''
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
