@@ -15,7 +15,7 @@ def to_csv(file_name):
     This method takes any file path to a dataset and converts it to a .csv file
     '''
     df = pandas.read_sas(file_name)
-    save_string = file_name[:file_name.index(".") + 1] + ".csv"
+    save_string = file_name[:file_name.index(".") + 1] + "csv"
     df.to_csv(save_string, index=False)  
 
 
