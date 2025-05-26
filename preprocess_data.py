@@ -20,9 +20,11 @@ def to_csv(file_name):
     df.to_csv(save_string, index=False)
 
 
-# This function was used to create the initial NSCH raw data .csv files
-# It is not necessary to run every time
 def nsch_to_csv():
+    '''
+    This function was used to create the initial NSCH raw data .csv files
+    It is not necessary to run every time
+    '''
     to_csv("raw_data/nsch_2023e_topical.sas7bdat")
     to_csv("raw_data/nsch_2022e_topical.sas7bdat")
     to_csv("raw_data/nsch_2021e_topical.sas7bdat")
@@ -213,7 +215,7 @@ def preprocess_nsch():
 
     df = pandas.read_csv("./raw_data/nsch_2023e_topical.csv")
 
-    # Double checks that all the columns to keep are actually in the dataset (no typoes, etc)
+    # Double checks that all the columns to keep are actually in the dataset (no typos, etc)
     missing_cols = [col for col in columns_to_keep if col not in df.columns]
     if missing_cols:
         print("Warning: These columns are missing from the dataset:")
