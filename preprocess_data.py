@@ -36,7 +36,7 @@ def nsch_to_csv():
     to_csv("raw_data/nsch_2016e_topical.sas7bdat")
 
 
-def preprocess_nsch():
+def preprocess_nsch(file_name):
     '''
     This method keeps only relevant columns in the NSCH dataset
     and renames them to more understandable names.
@@ -46,28 +46,27 @@ def preprocess_nsch():
     rename_map = {}
     with open('rename.json', 'r') as fp:
         rename_map = json.load(fp)
+    df = pandas.read_csv("./raw_data/" + file_name)
 
-    df = pandas.read_csv("./raw_data/nsch_2023e_topical.csv")
+    columns_to_keep = list(rename_map.keys())
+    # Removes any columns not found in current years data
+    for col in rename_map.keys():
+        if col not in df.columns:
+            columns_to_keep.remove(col)
 
-    # Double checks that all the columns to keep are actually in the dataset (no typos, etc)
-    missing_cols = [col for col in rename_map.keys() if col not in df.columns]
-    if missing_cols:
-        print("Warning: These columns are missing from the dataset:")
-        print(missing_cols)
-
-    df_filtered = df[rename_map.keys()].rename(columns=rename_map)
+    df_filtered = df[columns_to_keep].rename(columns=rename_map)
 
     # save this data to a new csv in the data_organized folder
     output_dir = './data_organized'
-    output_file = os.path.join(output_dir, 'filtered_dataset.csv')
+    output_file = os.path.join(output_dir, file_name)
     df_filtered.to_csv(output_file, index=False)
 
 
 def main():
     # Uncomment line below ONLY if working with original, unzipped .sas7bdat files
     # nsch_to_csv()
-
-    preprocess_nsch()
+    # for i in range(16, 24):
+    #     preprocess_nsch("nsch_20" + str(i) + "e_topical.csv")
 
 
 if __name__ == "__main__":
