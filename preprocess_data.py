@@ -54,7 +54,7 @@ def preprocess_dataset(file_name, json_name):
 
     df_filtered = df[columns_to_keep].rename(columns=rename_map)
 
-    # save this data to a new csv in the data_organized folder
+    # Save this data to a new csv in the data_organized folder
     output_dir = './data_organized'
     output_file = os.path.join(output_dir, file_name)
     df_filtered.to_csv(output_file, index=False)
