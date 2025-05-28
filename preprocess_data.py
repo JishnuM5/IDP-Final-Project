@@ -44,7 +44,7 @@ def preprocess_nsch(file_name):
     # A dictionary of column names to keep and new, more readable column names
     # The dictionary is stored in a JSON file for cleanliness
     rename_map = {}
-    with open('rename.json', 'r') as fp:
+    with open('NSCH_rename.json', 'r') as fp:
         rename_map = json.load(fp)
     df = pandas.read_csv("./raw_data/" + file_name)
 
@@ -56,7 +56,7 @@ def preprocess_nsch(file_name):
 
     df_filtered = df[columns_to_keep].rename(columns=rename_map)
 
-    # save this data to a new csv in the data_organized folder
+    # Save this data to a new csv in the data_organized folder
     output_dir = './data_organized'
     output_file = os.path.join(output_dir, file_name)
     df_filtered.to_csv(output_file, index=False)
@@ -67,6 +67,7 @@ def main():
     # nsch_to_csv()
     # for i in range(16, 24):
     #     preprocess_nsch("nsch_20" + str(i) + "e_topical.csv")
+    pass
 
 
 if __name__ == "__main__":
