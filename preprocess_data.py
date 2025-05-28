@@ -36,15 +36,13 @@ def nsch_to_csv():
     to_csv("raw_data/nsch_2016e_topical.sas7bdat")
 
 
-def preprocess_nsch(file_name):
+def preprocess_dataset(file_name, json_name):
     '''
-    This method keeps only relevant columns in the NSCH dataset
-    and renames them to more understandable names.
+    This method keeps only relevant columns in the provided dataset
+    and renames them to more understandable names
     '''
-    # A dictionary of column names to keep and new, more readable column names
-    # The dictionary is stored in a JSON file for cleanliness
     rename_map = {}
-    with open('NSCH_rename.json', 'r') as fp:
+    with open(json_name, 'r') as fp:
         rename_map = json.load(fp)
     df = pandas.read_csv("./raw_data/" + file_name)
 
@@ -66,9 +64,12 @@ def main():
     # Uncomment line below ONLY if working with original, unzipped .sas7bdat files
     # nsch_to_csv()
     # for i in range(16, 24):
-    #     preprocess_nsch("nsch_20" + str(i) + "e_topical.csv")
-    pass
-
+    #     preprocess_dataset("nsch_20" + str(i) + "e_topical.csv", "nsch_columns.json")
+    # preprocess_dataset("HBSC2002.csv", "hbsc_columns.json")
+    # preprocess_dataset("HBSC2006.csv", "hbsc_columns.json")
+    # preprocess_dataset("HBSC2010.csv", "hbsc_columns.json")
+    # preprocess_dataset("HBSC2014.csv", "hbsc_columns.json")
+    preprocess_dataset("HBSC2018.csv", "hbsc_columns.json")
 
 if __name__ == "__main__":
     main()
