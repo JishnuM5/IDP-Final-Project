@@ -15,7 +15,7 @@ import math
 
 def to_csv(file_name):
     '''
-    This method takes any file path to an SAS dataset and converts it to a .csv file
+    This method takes any file path to an SAS dataset and converts it to a .csv file.
     '''
     df = pd.read_sas(file_name)
     save_string = file_name[:file_name.index(".") + 1] + "csv"
@@ -25,7 +25,7 @@ def to_csv(file_name):
 def nsch_to_csv():
     '''
     This function was used to create the initial NSCH raw data .csv files
-    It is not necessary to run every time
+    It is not necessary to run every time.
     '''
     for i in range(16, 24):
         to_csv("nsch_20" + str(i) + "e_topical.csv")
@@ -42,7 +42,7 @@ def trim_rename_dataset(file_name, json_name, delimiter):
     df = pd.read_csv("./raw_data/" + file_name, delimiter=delimiter)
 
     columns_to_keep = list(rename_map.keys())
-    # Removes any columns not found in current years data
+    # Removes any columns not found in current year's data
     for col in rename_map.keys():
         if col not in df.columns:
             columns_to_keep.remove(col)
@@ -70,6 +70,9 @@ def preprocess_all():
 
 
 def preprocess_nsch_dataset(df, file_name):
+    '''
+    This method does NSCH-specific processing on the dataset
+    '''
     # Removes the b'' from the values (which is added by read_csv() during parsing)
     df["State_FIPS"] = df["State_FIPS"].apply(lambda str: str[2:len(str) - 1])
 
@@ -86,12 +89,16 @@ def preprocess_nsch_dataset(df, file_name):
 
 
 def preprocess_hbsc_dataset(df, file_name):
+    '''
+    This method does NSCH-specific processing on the dataset
+    '''
     country_map = {}
     with open("country_codes.json", 'r') as fp:
         country_map = json.load(fp)
     df["ISO_code"] = df["country_region"].apply(lambda num: country_map[str(num)])
     df = df.drop('country_region', axis=1)
 
+    # Quantify values using the JSON file mappings
     quant_maps = []
     with open("hbsc_quant_codes.json", 'r') as fp:
         quant_maps = json.load(fp)
@@ -100,6 +107,8 @@ def preprocess_hbsc_dataset(df, file_name):
             if col_name in df.columns:
                 df[col_name] = df[col_name].apply(
                     lambda val: val if math.isnan(val) else map["mapping"][str(int(val))])
+
+    # Combine the specified "Other" values with multiple choice values for necessary columns
     if "2014" in file_name:
         col_names = ["talk_to_friends_phone_internet_freq", "talk_to_friends_text_freq",
                      "talk_to_friends_email_freq", "talk_to_friends_social_media_freq"]
@@ -114,6 +123,9 @@ def preprocess_hbsc_dataset(df, file_name):
 
 
 def main():
+    '''
+    This main method runs the main code
+    '''
     # Uncomment line below ONLY if working with original, unzipped .sas7bdat files
     # data_to_csv()
     preprocess_all()

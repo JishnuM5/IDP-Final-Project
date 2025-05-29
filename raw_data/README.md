@@ -1,3 +1,4 @@
- Dirty data goes here. For any very large datasets (>1GB) do not upload it. Instead, provide a link to a shared Google Drive that contains all of your raw data.  
+# Raw Data
+All raw .csv data is available here. For the NSCH datasets, in order to get the original .sas7bdat files, unzip the [nsch_2016-2023e_topical.zip](nsch_2016-2023e_topical.zip) file.  
 
- Update this `README.md` document with links to your data if you do not upload the raw data.
+The `to_csv()` method in the [preprocess_data.py](../preprocess_data.py) file was used to generate these .csv datasets for NSCH. The HBSC datasets were obtained as .csv files.
