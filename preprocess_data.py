@@ -88,7 +88,7 @@ def preprocess_nsch_dataset(df, file_name):
         df["Screen_Time_Total"] = df["Screen_Time_Computers"] + df["Screen_Time_TV"]
     else:
         df = df.dropna(subset=["Screen_Time_Total"]).copy()
-        screen_map = {"1": .5, "2": 1, "3": 2, "4": 3, "5": 4}
+        screen_map = {1: .5, 2: 1, 3: 2, 4: 3, 5: 4}
         df["Screen_Time_Total"] = df["Screen_Time_Total"].map(screen_map)
 
     # Save this data to a new csv in the data_organized folder

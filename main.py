@@ -19,16 +19,20 @@ def create_dfs():
     for i in range(2016, 2024):
         file_name = f"nsch_{i}e_topical.csv"
         nsch_dfs[i] = pd.read_csv("data_organized/" + file_name)
-    # for i in range(2002, 2019, 4):
-    #     file_name = f"HBSC{i}.csv"
-    #     hbsc_dfs[i] = pd.read_csv("data_organized/" + file_name)
+    for i in range(2002, 2019, 4):
+        file_name = f"HBSC{i}.csv"
+        hbsc_dfs[i] = pd.read_csv("data_organized/" + file_name)
 
     return (nsch_dfs, hbsc_dfs)
 
 
-def filter_concat_dfs(dfs, filter_cols):
+def filter_concat_dfs(dfs, filter_cols, exlude_dfs=None):
     # To avoid changing the original DataFrames
     plot_dfs = dfs.copy()
+
+    if exlude_dfs is not None:
+        for df_name in exlude_dfs:
+            del plot_dfs[df_name]
 
     for year in plot_dfs:
         plot_dfs[year] = plot_dfs[year][filter_cols]
@@ -61,8 +65,8 @@ def friendship_vs_screen_time(nsch_dfs):
 
 
 def deep_talk_vs_screen_time(nsch_dfs):
-    plot_df = filter_concat_dfs({k: nsch_dfs[k] for k in (2016, 2017)}, 
-                                ["Screen_Time_Total", "Good_Communication_With_Child"])
+    plot_df = filter_concat_dfs(
+        nsch_dfs, ["Screen_Time_Total", "Good_Communication_With_Child"], [2000 + i for i in range(18, 24)])
 
     GCWC_map = {
         1: "Very well",
@@ -81,9 +85,11 @@ def deep_talk_vs_screen_time(nsch_dfs):
     plt.savefig("plots/deep_talk.png", bbox_inches='tight')
 
 
-def health_screen_time_age(nsch_dfs):
+def health_screen_time_age(nsch_dfs, exclude_dfs, name):
     plot_df = filter_concat_dfs(
-        nsch_dfs, ["Received_Mental_Health_Treatment", "Screen_Time_Total", "Child_Age_Years"])
+        nsch_dfs, ["Received_Mental_Health_Treatment", "Screen_Time_Total", "Child_Age_Years"], exclude_dfs)
+
+    print(plot_df)
 
     # Those who received or need mental health treatment are having a mental health condition
     plot_df["Needs Mental Health Treatment"] = plot_df["Received_Mental_Health_Treatment"].apply(
@@ -103,8 +109,8 @@ def health_screen_time_age(nsch_dfs):
                 hue='Needs Mental Health Treatment', orient='horizontal', 
                 dodge=True)
     plt.gcf().set_size_inches(8, 5)
-    plt.title("The Screen Time Age Distribution and Mental Health")
-    plt.savefig("plots/pop_pyramid.png", bbox_inches="tight")
+    plt.title(f"The Screen Time Age Distribution and Mental Health, {name}")
+    plt.savefig(f"plots/pop_pyr_{name}.png", bbox_inches="tight")
 
 
 def main():
@@ -113,7 +119,9 @@ def main():
     plt.clf()
     deep_talk_vs_screen_time(nsch_dfs)
     plt.clf()
-    health_screen_time_age(nsch_dfs)
+    health_screen_time_age(nsch_dfs, [2000 + i for i in range(18, 24)], "2016-2017")
+    plt.clf()
+    health_screen_time_age(nsch_dfs, [2016, 2017], "2018-2023")
     plt.clf()
 
 
