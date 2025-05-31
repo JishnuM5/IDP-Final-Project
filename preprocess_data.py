@@ -76,13 +76,20 @@ def preprocess_nsch_dataset(df, file_name):
     # Removes the b'' from the values (which is added by read_csv() during parsing)
     df["State_FIPS"] = df["State_FIPS"].apply(lambda str: str[2:len(str) - 1])
 
-    # Creates screen time column in 2016 and 2017 datasets, removes NaN screen time values
+    # Creates and quantifies screen time column in 2016 and 2017 datasets, removes NaN screen time values
     if ("2016" in file_name or "2017" in file_name):
         # The .copy() explicitly creates a copy to avoid returning a view in some cases
         df = df.dropna(subset=["Screen_Time_Computers", "Screen_Time_TV"], how="any").copy()
+
+        screen_map = {1: 0, 2: .5, 3: 1, 4: 2, 5: 3, 6: 4}
+        df["Screen_Time_Computers"] = df["Screen_Time_Computers"].map(screen_map)
+        df["Screen_Time_TV"] = df["Screen_Time_TV"].map(screen_map)
+
         df["Screen_Time_Total"] = df["Screen_Time_Computers"] + df["Screen_Time_TV"]
     else:
         df = df.dropna(subset=["Screen_Time_Total"]).copy()
+        screen_map = {"1": .5, "2": 1, "3": 2, "4": 3, "5": 4}
+        df["Screen_Time_Total"] = df["Screen_Time_Total"].map(screen_map)
 
     # Save this data to a new csv in the data_organized folder
     df.to_csv(os.path.join('./data_organized', file_name), index=False)

@@ -28,6 +28,7 @@ screen_cols = ["tv_hours_weekdays", "tv_hours_weekends", "video_game_hours_weekd
                "talk_to_friends_phone_internet_freq", "talk_to_friends_text_freq",
                "talk_to_friends_email_freq", "talk_to_friends_social_media_freq"
                ]
+# All DataFrames to be used are created here
 years = [2002, 2006, 2010, 2014, 2018]
 dfs = {}
 for year in years:
@@ -35,6 +36,9 @@ for year in years:
 
 
 def get_present_cols(df, all_cols):
+    '''
+    This method returns all columns from a given list that are present in a DataFrame
+    '''
     return [col for col in all_cols if col in df.columns]
 
 
@@ -42,8 +46,11 @@ def get_present_cols(df, all_cols):
 present_health_cols = get_present_cols(dfs[2002], health_cols)
 present_screen_cols = get_present_cols(dfs[2002], screen_cols)
 
+# This is the primary layout of the app, using html-style components,
+# along with some bootstrap formatting and layout components
 app.layout = dbc.Container([
     html.H1('Screen Time & Mental Health in European Adolescents', className='mb-4 mt-2 text-center'),
+    # Below are the dropdowns to select variables
     dbc.Row([
         dbc.Col(
             dcc.Dropdown(
@@ -69,6 +76,7 @@ app.layout = dbc.Container([
         ),
     ], className='mb-4'),
 
+    # Below is the slider to set the year of data to look at
     html.Div(
         html.Div(
             dcc.Slider(
@@ -86,6 +94,7 @@ app.layout = dbc.Container([
         }
     ),
 
+    # Here is the choropleth graph itself
     html.Div(
         dcc.Graph(id='corr_choropleth', style={'width': '100%', 'height': '70vh'}),
         style={
@@ -98,6 +107,7 @@ app.layout = dbc.Container([
 ], fluid=True)
 
 
+# Callback methods ensure the method runs and an output value is given every time some input(s) change
 @callback(
     Output('health-dropdown', 'options'),
     Output('health-dropdown', 'value'),
@@ -106,6 +116,10 @@ app.layout = dbc.Container([
     Input('year-slider', 'value'),
 )
 def update_dropdowns(year):
+    '''
+    This method updates the dropdown's list's values when the slider changes,
+    as the variables available to correlate can change year-by-year
+    '''
     df = dfs[year]
     health = get_present_cols(df, health_cols)
     screen = get_present_cols(df, screen_cols)
@@ -121,6 +135,9 @@ def update_dropdowns(year):
     Input('year-slider', 'value')
 )
 def update_choropleth(health_col, screen_col, year):
+    '''
+    This method updates the graph based on chosen dropdown and year variables.
+    '''
     # Calculate correlation for each country
     corr_df = dfs[year][[health_col, screen_col, "ISO_code"]].dropna()
     corr_df = corr_df.groupby('ISO_code') \
