@@ -28,8 +28,12 @@ Here are the files and folders used for our project:
   
 > **preprocess_data.py:** This file contains the preprocessing code used to create the clean datasets.  
   
-> **run_tests.py:** This file contains the testing code for the Dash app.
+> **run_tests.py:** This file contains the testing code for the Dash app.  
 
+<br>
+This is the flow of data to visualizations:
+
+![flowchart](flowchart.png)
 
 ## Build Requirements & Dependencies
 
