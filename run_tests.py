@@ -14,6 +14,9 @@ from cse163_utils import assert_equals
 
 
 def test_update_choropleth():
+    '''
+    This function just tests the correlation function from the interactive Plotly Dash app
+    '''
     test_df = pd.DataFrame({
         "ISO_code": ["AUT", "AUT", "AUT", "BEL", "BEL", "BEL"],
         "fruit_intake_weekly": [1, 2, 3, 1, 2, 3],

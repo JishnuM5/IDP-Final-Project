@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 
 def create_dfs():
     '''
-    This method creates all the DataFrames that will be used for analysis
+    This function creates all the DataFrames that will be used for analysis
     '''
     nsch_dfs = {}
     hbsc_dfs = {}
 
-    # for i in range(2016, 2024):
-    #     file_name = f"nsch_{i}e_topical.csv"
-    #     nsch_dfs[i] = pd.read_csv("data_organized/" + file_name)
+    for i in range(2016, 2024):
+        file_name = f"nsch_{i}e_topical.csv"
+        nsch_dfs[i] = pd.read_csv("data_organized/" + file_name)
     for i in range(2002, 2019, 4):
         file_name = f"HBSC{i}.csv"
         hbsc_dfs[i] = pd.read_csv("data_organized/" + file_name)
@@ -27,9 +27,13 @@ def create_dfs():
 
 
 def filter_concat_dfs(dfs, filter_cols, exlude_dfs=None):
+    '''
+    This function filters and merges DataFrames from different years 
+    '''
     # To avoid changing the original DataFrames
     plot_dfs = dfs.copy()
 
+    # Some DataFrames may not have the desired columns
     if exlude_dfs is not None:
         for df_name in exlude_dfs:
             del plot_dfs[df_name]
@@ -40,7 +44,13 @@ def filter_concat_dfs(dfs, filter_cols, exlude_dfs=None):
 
 
 def friendship_vs_screen_time(nsch_dfs):
+    '''
+    This function plots a stacked bar chart to analyze how difficulty making friends varies with screen time
+    '''
     def categorize_screen_time(hours):
+        '''
+        This subfunction is used to categorize screen time
+        '''
         if hours <= 1:
             return "0-1"
         if 2 <= hours <= 3:
@@ -50,6 +60,8 @@ def friendship_vs_screen_time(nsch_dfs):
 
     plot_df = filter_concat_dfs(nsch_dfs, ["Screen_Time_Total", "Difficulty_Making_Friends"])
     plot_df["Screen Time (Hours)"] = plot_df["Screen_Time_Total"].apply(categorize_screen_time)
+
+    # This organizes the legend
     plot_df["Screen Time (Hours)"] = pd.Categorical(
         plot_df["Screen Time (Hours)"], ["0-1", "2-3", "4+"]
     )
@@ -65,9 +77,15 @@ def friendship_vs_screen_time(nsch_dfs):
 
 
 def deep_talk_vs_screen_time(nsch_dfs):
+    '''
+    This function plots a violin chart to analyze the distribution of screen time 
+    for various depths of relations
+    '''
+    # This plot only looks at 2016-2017 data (due to the greater range of screen time data)
     plot_df = filter_concat_dfs(
         nsch_dfs, ["Screen_Time_Total", "Good_Communication_With_Child"], [2000 + i for i in range(18, 24)])
 
+    # Maps numerical labels to strings
     GCWC_map = {
         1: "Very well",
         2: "Somewhat well",
@@ -80,12 +98,15 @@ def deep_talk_vs_screen_time(nsch_dfs):
     plt.gcf().set_size_inches(8, 4)
     plt.title("How Screen Time Varies with Depth of Relations")
     plt.xlabel("Child's Screen Time (Hours)")
-    # Note in report and presentation that this is discussing with parents
     plt.ylabel("How Well Child Discusses Topics That Matter")
     plt.savefig("plots/deep_talk.png", bbox_inches='tight')
 
 
 def health_screen_time_age(nsch_dfs, exclude_dfs, name):
+    '''
+    This function plots a one-way population pyramid (aka grouped bar chart) to analyze how
+    the distribution of screen time across ages differs with mental health conditions
+    '''
     plot_df = filter_concat_dfs(
         nsch_dfs, ["Received_Mental_Health_Treatment", "Screen_Time_Total", "Child_Age_Years"], exclude_dfs)
 
@@ -112,6 +133,11 @@ def health_screen_time_age(nsch_dfs, exclude_dfs, name):
 
 
 def life_sat_screen_time_buffers(hbsc_dfs):
+    '''
+    This function looks at the correlation between life satisfaction and screen time,
+    and how this correlation is greater/lesser in various subgroups
+    '''
+    # Creating number-string label maps
     freq_6mo_map = {
         7: "About every day",
         2.5: "More than once/week",
@@ -119,7 +145,7 @@ def life_sat_screen_time_buffers(hbsc_dfs):
         0.25: "About every month",
         0: "Rarely or never"
     }
-
+    # Here, the buffer variable's name, label, and plot file name is also stored in a dictionary
     buffers_catalysts = {
         ("self_perceived_family_wealth", "Family is Perceived To Be:", "well_off"): {
             1: "Very well off",
@@ -152,6 +178,7 @@ def life_sat_screen_time_buffers(hbsc_dfs):
 
     }
 
+    # Saving a plot for each buffer/catalyst
     for key in buffers_catalysts:
         hue_col, hue_title, file_name = key
         plot_df = filter_concat_dfs(
@@ -170,22 +197,26 @@ def life_sat_screen_time_buffers(hbsc_dfs):
         sns.lmplot(data=plot_df, x="computer_use_hours_weekdays", y="life_satisfaction_score", 
                    hue=hue_col, scatter=False, legend=False, ci=ci_val)
         plt.legend(title=hue_title, loc="upper center", bbox_to_anchor=(0.5, 1.1), ncol=2)
-        plt.savefig(f"plots/buffer_{file_name}.png", bbox_inches="tight")
         plt.xlabel("Daily Computer Use, Weekdays (Hours)")
         plt.ylabel("Life Satisfaction Score")
+        plt.savefig(f"plots/buffer_{file_name}.png", bbox_inches="tight")
         plt.clf()
 
 
 def main():
+    '''
+    This function creates the DataFrames and runs the plotting functions
+    '''
     nsch_dfs, hbsc_dfs = create_dfs()
-    # friendship_vs_screen_time(nsch_dfs)
-    # plt.clf()
-    # deep_talk_vs_screen_time(nsch_dfs)
-    # plt.clf()
-    # health_screen_time_age(nsch_dfs, [2000 + i for i in range(18, 24)], "2016-2017")
-    # plt.clf()
-    # health_screen_time_age(nsch_dfs, [2016, 2017], "2018-2023")
-    # plt.clf()
+    friendship_vs_screen_time(nsch_dfs)
+    plt.clf()
+    deep_talk_vs_screen_time(nsch_dfs)
+    plt.clf()
+    # Looking at the population pyramid separately for 2016-17 and 2018-23 (due to data disparities)
+    health_screen_time_age(nsch_dfs, [2000 + i for i in range(18, 24)], "2016-2017")
+    plt.clf()
+    health_screen_time_age(nsch_dfs, [2016, 2017], "2018-2023")
+    plt.clf()
     life_sat_screen_time_buffers(hbsc_dfs)
 
 
