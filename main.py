@@ -16,9 +16,9 @@ def create_dfs():
     nsch_dfs = {}
     hbsc_dfs = {}
 
-    for i in range(2016, 2024):
-        file_name = f"nsch_{i}e_topical.csv"
-        nsch_dfs[i] = pd.read_csv("data_organized/" + file_name)
+    # for i in range(2016, 2024):
+    #     file_name = f"nsch_{i}e_topical.csv"
+    #     nsch_dfs[i] = pd.read_csv("data_organized/" + file_name)
     for i in range(2002, 2019, 4):
         file_name = f"HBSC{i}.csv"
         hbsc_dfs[i] = pd.read_csv("data_organized/" + file_name)
@@ -89,8 +89,6 @@ def health_screen_time_age(nsch_dfs, exclude_dfs, name):
     plot_df = filter_concat_dfs(
         nsch_dfs, ["Received_Mental_Health_Treatment", "Screen_Time_Total", "Child_Age_Years"], exclude_dfs)
 
-    print(plot_df)
-
     # Those who received or need mental health treatment are having a mental health condition
     plot_df["Needs Mental Health Treatment"] = plot_df["Received_Mental_Health_Treatment"].apply(
         lambda val: "No" if val == 3 else "Yes")
@@ -113,16 +111,82 @@ def health_screen_time_age(nsch_dfs, exclude_dfs, name):
     plt.savefig(f"plots/pop_pyr_{name}.png", bbox_inches="tight")
 
 
+def life_sat_screen_time_buffers(hbsc_dfs):
+    freq_6mo_map = {
+        7: "About every day",
+        2.5: "More than once/week",
+        1: "About every week",
+        0.25: "About every month",
+        0: "Rarely or never"
+    }
+
+    buffers_catalysts = {
+        ("self_perceived_family_wealth", "Family is Perceived To Be:", "well_off"): {
+            1: "Very well off",
+            2: "Quite well off",
+            3: "Average",
+            4: "Not very well off",
+            5: "Not at all well off"
+        },
+        ("active_days_past_week", "Days Active in Past Week", "active"): {
+            0: "0 days",
+            1: "1 day",
+            2: "2 days",
+            3: "3 days",
+            4: "4 days",
+            5: "5 days",
+            6: "6 days",
+            7: "7 days"
+        },
+        ("talk_to_best_friend_difficulty", "Talking to Best Friend About Bothers Is:", "best_friend"):
+        {
+            1: "Very easy",
+            2: "Easy",
+            3: "Difficult",
+            4: "Very difficult",
+            5: "Don't have/see them"
+        },
+        ("sleep_issues_frequency_6mo", "Sleep Issues in Past 6 Months", "bad_sleep"): freq_6mo_map,
+        ("headache_frequency_6mo", "Headaches in Past 6 Months", "headaches"): freq_6mo_map,
+        ("irritable_frequency_6mo", "Irritability in Past 6 Months", "irritable"): freq_6mo_map,
+
+    }
+
+    for key in buffers_catalysts:
+        hue_col, hue_title, file_name = key
+        plot_df = filter_concat_dfs(
+            hbsc_dfs, 
+            ["computer_use_hours_weekdays", "life_satisfaction_score", hue_col], 
+            [2014, 2018] if (file_name == "best_friend") else [2018]
+        )
+        plot_df[hue_col] = plot_df[hue_col].map(buffers_catalysts[key])
+        cat_order = list(buffers_catalysts[key].values())
+        plot_df[hue_col] = pd.Categorical(plot_df[hue_col], categories=cat_order, ordered=True)
+
+        # WARNING: calculating a confidence interval is computationally heavy.
+        # It increases plotting time from seconds to minutes.
+        # Set `ci_val` to None (removes confidence interval) for quicker plotting.
+        ci_val = 95
+        sns.lmplot(data=plot_df, x="computer_use_hours_weekdays", y="life_satisfaction_score", 
+                   hue=hue_col, scatter=False, legend=False, ci=ci_val)
+        plt.legend(title=hue_title, loc="upper center", bbox_to_anchor=(0.5, 1.1), ncol=2)
+        plt.savefig(f"plots/buffer_{file_name}.png", bbox_inches="tight")
+        plt.xlabel("Daily Computer Use, Weekdays (Hours)")
+        plt.ylabel("Life Satisfaction Score")
+        plt.clf()
+
+
 def main():
     nsch_dfs, hbsc_dfs = create_dfs()
-    friendship_vs_screen_time(nsch_dfs)
-    plt.clf()
-    deep_talk_vs_screen_time(nsch_dfs)
-    plt.clf()
-    health_screen_time_age(nsch_dfs, [2000 + i for i in range(18, 24)], "2016-2017")
-    plt.clf()
-    health_screen_time_age(nsch_dfs, [2016, 2017], "2018-2023")
-    plt.clf()
+    # friendship_vs_screen_time(nsch_dfs)
+    # plt.clf()
+    # deep_talk_vs_screen_time(nsch_dfs)
+    # plt.clf()
+    # health_screen_time_age(nsch_dfs, [2000 + i for i in range(18, 24)], "2016-2017")
+    # plt.clf()
+    # health_screen_time_age(nsch_dfs, [2016, 2017], "2018-2023")
+    # plt.clf()
+    life_sat_screen_time_buffers(hbsc_dfs)
 
 
 if __name__ == "__main__":

@@ -26,6 +26,7 @@
   "irritable": "irritable_frequency_6mo",
   "nervous": "nervous_frequency_6mo",
   "sleepdifficulty": "sleep_issues_frequency_6mo",
+  "sleepdificulty": "sleep_issues_frequency_6mo",
   "dizzy": "dizziness_frequency_6mo",
   "health": "self_rated_health",
   "lifesat": "life_satisfaction_score",
