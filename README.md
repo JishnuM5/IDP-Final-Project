@@ -4,6 +4,7 @@
 
 
 ## Build Requirements & Dependencies
+
 **Python Version:** 3.11 or newer is recommended  
 
 **Required Python Packages:**
@@ -14,7 +15,17 @@
 * Dash
 * Dash Bootstrap Components  
 
-You can install all of these with an environment (e.g. Anaconda) or 
+You can install all of these with an environment (e.g. Anaconda) or the following line:
+
+```sh 
+pip install pandas matplotlib seaborn plotly dash_bootstrap_components
+```
+  
+To run the code clone the repository:
+```
+```
+  
+Then, install dependencies as necessary (shown above). From here onwards, 
 
 Add instructions to explain the extended files & folders in your project. Also, if some/all of your project will not run from GitHub, provide instructions for how to setup and run your code locally. Ideally, only some parts of your project would require custom setup while the rest will run without changes.  
 
