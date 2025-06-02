@@ -1,5 +1,6 @@
 # Plots
 ## Final Generated Plots
+All final plots for this project can be found in this folder. Run the [main.py](../main.py) file to regenerate the plots. Refer to the plot generation functions in this file for plot descriptions
 
 ## Plot Sketches
 Here is the link to a Google Drive folder with all plot sketches: https://drive.google.com/drive/folders/1m-SeJ7mwC1khtW_OJlFm8n8AwQFLNMXJ

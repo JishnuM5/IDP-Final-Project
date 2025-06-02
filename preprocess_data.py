@@ -57,15 +57,15 @@ def preprocess_all():
     '''
     for i in range(16, 24):
         file_name = "nsch_20" + str(i) + "e_topical.csv"
-        df = trim_rename_dataset(file_name, "nsch_columns.json", ",")
+        df = trim_rename_dataset(file_name, "data_maps/nsch_columns.json", ",")
         preprocess_nsch_dataset(df, file_name)
     for i in range(2, 15, 4):
         file_name = f"HBSC20{i:02}.csv"
-        df = trim_rename_dataset(file_name, "hbsc_columns.json", ",")
+        df = trim_rename_dataset(file_name, "data_maps/hbsc_columns.json", ",")
         preprocess_hbsc_dataset(df, file_name)
 
     # The 2018 file used semicolons as delimiters, so had to be done separately
-    df = trim_rename_dataset("HBSC2018.csv", "hbsc_columns.json", ";")
+    df = trim_rename_dataset("HBSC2018.csv", "data_maps/hbsc_columns.json", ";")
     preprocess_hbsc_dataset(df, "HBSC2018.csv")
 
 
@@ -100,14 +100,14 @@ def preprocess_hbsc_dataset(df, file_name):
     This method does NSCH-specific processing on the dataset
     '''
     country_map = {}
-    with open("country_codes.json", 'r') as fp:
+    with open("data_maps/country_codes.json", 'r') as fp:
         country_map = json.load(fp)
     df["ISO_code"] = df["country_region"].apply(lambda num: country_map[str(num)])
     df = df.drop('country_region', axis=1)
 
     # Quantify values using the JSON file mappings
     quant_maps = []
-    with open("hbsc_quant_codes.json", 'r') as fp:
+    with open("data_maps/hbsc_quant_codes.json", 'r') as fp:
         quant_maps = json.load(fp)
     for map in quant_maps:
         for col_name in map["columns"]:
