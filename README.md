@@ -71,7 +71,7 @@ python main.py
 ```sh
 python run_tests.py
 ```
-6. If you would like the run the Dash app test:
+6. If you would like to run the Dash app test:
 ```sh
 python run_tests.py
 ```
