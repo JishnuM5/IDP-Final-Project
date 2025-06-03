@@ -1,12 +1,13 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/teJOLcnO)
 
 # IDP Final Project
-Our generation is the first to grow up fully immersed in a world of digital technology. From smartphones and tablets to laptops and gaming consoles, screens have become a constant in our daily lives. While mental health has always been a global concern, its intersection with increasing screen time has become especially relevant in the aftermath of the COVID-19 pandemic. As technology usage surged due to remote schooling and work, existing guidelines around screen time relaxed significantly (University of the Witwatersrand). In recent years, research has begun to uncover the deeper mental health implications of this shift, with some studies demonstrating that excessive screen time can negatively impact our health—and this is particularly true for children and teenagers (National Institute of Drug Abuse).
+Our generation is the first to grow up immersed in digital technology. From phones and tablets to gaming consoles, screens are integrated in our daily lives. Now, in the aftermath of the COVID pandemic, people have been increasingly aware of screen time’s impact on health. As technology usage surged with remote schooling and work, existing guidelines around screen time relaxed significantly (University of the Witwatersrand). In recent years, research has begun to uncover the deeper mental health implications of this shift, with some studies demonstrating that excessive screen time can negatively impact our health—and this is particularly true for children and teenagers (National Institute of Drug Abuse).
 
-Our project seeks to investigate the broader relationship between screen time and adolescent well-being. To guide our analysis, we posed three main research questions:
+Our project investigates the relationship between screen time and adolescent well-being. To guide our analysis, we posed three main research questions:
 1. How does screen time affect adolescents’ ability to connect with others, and their depth of connections?
 2. How do screen time and health trends vary across demographics (age, geography, etc)?
-3. Do certain variables “buffer” or “catalyze” the relationship between screen time and health? In other words, can certain habits help limit the negative impact of screen time.
+3. Do certain variables “buffer” or “catalyze” the relationship between screen time and health? In other words, can certain habits help limit the negative impact of screen time?
+
 
 ## Files and Folders
 Here are the files and folders used for our project:
@@ -24,7 +25,7 @@ Here are the files and folders used for our project:
   
 > **LICENSE:** This file outlines the MIT License for this code. This project is open-source.  
   
-> **main.py:** This file contains the plot generation code.  
+> **main.py:** This file contains the plot generation code. This is also where dataset merging happens (in `filter_concat_dfs()`) before plotting. See more on dataset merging in data_organized's [README.md](data_organized/README.md).
   
 > **preprocess_data.py:** This file contains the preprocessing code used to create the clean datasets.  
   
@@ -75,7 +76,7 @@ python main.py
 ```sh
 python run_tests.py
 ```
-6. If you would like to run the Dash app test:
+6. If you would like the run the Dash app test:
 ```sh
 python run_tests.py
 ```
