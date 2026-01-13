@@ -330,7 +330,3 @@ ASALocalRun/
 .mfractor/
 
 *.DS_Store
-
-# Large files
-raw_data/
-data_organized/
